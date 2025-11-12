@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- قاعدة البيانات SQLite -->
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.118" />
+    
+    <!-- Material Design للتصميم الحديث -->
+    <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
+    <PackageReference Include="MaterialDesignColors" Version="2.1.4" />
+    
+    <!-- تصدير Excel -->
+    <PackageReference Include="EPPlus" Version="7.0.5" />
+    
+    <!-- تصدير PDF -->
+    <PackageReference Include="QuestPDF" Version="2024.3.0" />
+    
+    <!-- تشفير كلمات المرور -->
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    
+    <!-- Dapper للوصول السريع للبيانات -->
+    <PackageReference Include="Dapper" Version="2.1.35" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Fonts\*.ttf" />
+    <Resource Include="Resources\Images\**\*.*" />
+  </ItemGroup>
+
+</Project>

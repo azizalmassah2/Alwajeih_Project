@@ -1,0 +1,108 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- 🇸🇦 شعار الوجيه - تصميم سعودي أنيق -->
+    
+    <!-- الشعار الكامل مع الزخارف -->
+    <DrawingImage x:Key="AlwajeihLogo">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- الخلفية الدائرية بـ Gradient ذهبي -->
+                <GeometryDrawing>
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry Center="50,50" RadiusX="48" RadiusY="48"/>
+                    </GeometryDrawing.Geometry>
+                    <GeometryDrawing.Brush>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#1E3A8A" Offset="0"/>
+                            <GradientStop Color="#3B82F6" Offset="0.5"/>
+                            <GradientStop Color="#F59E0B" Offset="1"/>
+                        </LinearGradientBrush>
+                    </GeometryDrawing.Brush>
+                </GeometryDrawing>
+                
+                <!-- الدائرة الداخلية -->
+                <GeometryDrawing>
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry Center="50,50" RadiusX="42" RadiusY="42"/>
+                    </GeometryDrawing.Geometry>
+                    <GeometryDrawing.Brush>
+                        <SolidColorBrush Color="#1E3A8A"/>
+                    </GeometryDrawing.Brush>
+                </GeometryDrawing>
+                
+                <!-- رمز العملة الريال السعودي (زخرفة) -->
+                <GeometryDrawing Brush="#FBBF24">
+                    <GeometryDrawing.Geometry>
+                        <PathGeometry Figures="M 35,30 L 35,50 L 40,50 L 40,42 L 50,42 C 55,42 58,39 58,35 C 58,31 55,30 50,30 Z M 40,35 L 50,35 C 52,35 53,36 53,37.5 C 53,39 52,40 50,40 L 40,40 Z"/>
+                    </GeometryDrawing.Geometry>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#FBBF24" Thickness="2"/>
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+                
+                <!-- خط التزيين (زخرفة إسلامية) -->
+                <GeometryDrawing Brush="#FBBF24">
+                    <GeometryDrawing.Geometry>
+                        <PathGeometry Figures="M 30,55 Q 40,58 50,55 Q 60,52 70,55"/>
+                    </GeometryDrawing.Geometry>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#FCD34D" Thickness="2"/>
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+                
+                <!-- نجمة صغيرة (رمز التميز) -->
+                <GeometryDrawing Brush="#FCD34D">
+                    <GeometryDrawing.Geometry>
+                        <PathGeometry Figures="M 50,20 L 52,26 L 58,26 L 53,30 L 55,36 L 50,32 L 45,36 L 47,30 L 42,26 L 48,26 Z"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                
+                <!-- إطار ذهبي خارجي -->
+                <GeometryDrawing>
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry Center="50,50" RadiusX="48" RadiusY="48"/>
+                    </GeometryDrawing.Geometry>
+                    <GeometryDrawing.Pen>
+                        <Pen Brush="#F59E0B" Thickness="2"/>
+                    </GeometryDrawing.Pen>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+    <!-- شعار مصغر للأيقونة -->
+    <DrawingImage x:Key="AlwajeihIcon">
+        <DrawingImage.Drawing>
+            <DrawingGroup>
+                <!-- خلفية -->
+                <GeometryDrawing>
+                    <GeometryDrawing.Geometry>
+                        <RectangleGeometry Rect="0,0,100,100" RadiusX="20" RadiusY="20"/>
+                    </GeometryDrawing.Geometry>
+                    <GeometryDrawing.Brush>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                            <GradientStop Color="#1E3A8A" Offset="0"/>
+                            <GradientStop Color="#F59E0B" Offset="1"/>
+                        </LinearGradientBrush>
+                    </GeometryDrawing.Brush>
+                </GeometryDrawing>
+                
+                <!-- حرف "و" بالخط العربي -->
+                <GeometryDrawing Brush="White">
+                    <GeometryDrawing.Geometry>
+                        <PathGeometry Figures="M 30,40 Q 40,35 50,40 Q 60,45 70,40 L 70,50 Q 60,55 50,50 Q 40,45 30,50 Z"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+                
+                <!-- نقطة ذهبية -->
+                <GeometryDrawing Brush="#FBBF24">
+                    <GeometryDrawing.Geometry>
+                        <EllipseGeometry Center="50,65" RadiusX="8" RadiusY="8"/>
+                    </GeometryDrawing.Geometry>
+                </GeometryDrawing>
+            </DrawingGroup>
+        </DrawingImage.Drawing>
+    </DrawingImage>
+    
+</ResourceDictionary>

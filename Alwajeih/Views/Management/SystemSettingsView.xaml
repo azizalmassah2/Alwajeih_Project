@@ -1,0 +1,104 @@
+﻿<UserControl
+  x:Class="Alwajeih.Views.Management.SystemSettingsView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  FlowDirection="RightToLeft"
+  FontFamily="{StaticResource Tajawal}"
+>
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Resources/Styles/ScrollBarStyles.xaml" />
+        <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
+        <ResourceDictionary Source="/Resources/Styles/Buttons.xaml" />
+        <ResourceDictionary Source="/Resources/Styles/MainStyles.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+
+  <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{StaticResource ModernScrollViewer}">
+    <StackPanel Margin="20">
+      <!-- بطاقة معلومات الجمعية -->
+      <Border Style="{StaticResource ModernCard}" Margin="0,0,0,20">
+        <StackPanel>
+          <TextBlock Text="📅 معلومات الجمعية الحالية" Style="{StaticResource SectionTitle}" />
+          
+          <Grid Margin="0,15,0,0">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*" />
+              <ColumnDefinition Width="20" />
+              <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+            <!-- تاريخ البداية -->
+            <StackPanel Grid.Column="0">
+              <TextBlock Text="تاريخ البداية" Style="{StaticResource FieldLabel}" />
+              <DatePicker x:Name="StartDatePicker" Style="{StaticResource ModernDatePicker}" />
+            </StackPanel>
+            
+            <!-- تاريخ النهاية -->
+            <StackPanel Grid.Column="2">
+              <TextBlock Text="تاريخ النهاية" Style="{StaticResource FieldLabel}" />
+              <DatePicker x:Name="EndDatePicker" Style="{StaticResource ModernDatePicker}" />
+            </StackPanel>
+          </Grid>
+          
+          <!-- معلومات إضافية -->
+          <Border Background="#F8FAFC" CornerRadius="8" Padding="15" Margin="0,20,0,0">
+            <Grid>
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+              </Grid.ColumnDefinitions>
+              
+              <StackPanel Grid.Column="0">
+                <TextBlock Text="إجمالي الأسابيع" FontSize="12" Foreground="#64748B" />
+                <TextBlock x:Name="TotalWeeksText" Text="26 أسبوع" FontSize="18" FontWeight="Bold" Foreground="#2563EB" Margin="0,5,0,0" />
+              </StackPanel>
+              
+              <StackPanel Grid.Column="1">
+                <TextBlock Text="الأسابيع المنقضية" FontSize="12" Foreground="#64748B" />
+                <TextBlock x:Name="ElapsedWeeksText" Text="9 أسابيع" FontSize="18" FontWeight="Bold" Foreground="#10B981" Margin="0,5,0,0" />
+              </StackPanel>
+              
+              <StackPanel Grid.Column="2">
+                <TextBlock Text="الأسابيع المتبقية" FontSize="12" Foreground="#64748B" />
+                <TextBlock x:Name="RemainingWeeksText" Text="17 أسبوع" FontSize="18" FontWeight="Bold" Foreground="#F59E0B" Margin="0,5,0,0" />
+              </StackPanel>
+            </Grid>
+          </Border>
+          
+          <!-- أزرار الإجراءات -->
+          <StackPanel Orientation="Horizontal" Margin="0,20,0,0">
+            <Button Content="💾 حفظ التغييرات" Style="{StaticResource PrimaryButton}" Click="SaveSettings_Click" Margin="0,0,10,0" />
+            <Button Content="🔄 إعادة تحميل" Style="{StaticResource SecondaryButton}" Click="ReloadSettings_Click" />
+          </StackPanel>
+        </StackPanel>
+      </Border>
+      
+      <!-- بطاقة التنبيهات -->
+      <Border Style="{StaticResource ModernCard}">
+        <StackPanel>
+          <TextBlock Text="⚠️ تنبيهات مهمة" Style="{StaticResource SectionTitle}" />
+          
+          <Border Background="#FEF2F2" BorderBrush="#FCA5A5" BorderThickness="1" CornerRadius="8" Padding="15" Margin="0,15,0,10">
+            <StackPanel>
+              <TextBlock Text="⚠️ تحذير" FontWeight="Bold" Foreground="#DC2626" FontSize="14" />
+              <TextBlock Text="تغيير التواريخ قد يؤثر على جميع الحسابات والتقارير. تأكد من صحة التواريخ قبل الحفظ." 
+                         Foreground="#991B1B" FontSize="13" Margin="0,5,0,0" TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+          
+          <Border Background="#EFF6FF" BorderBrush="#BFDBFE" BorderThickness="1" CornerRadius="8" Padding="15">
+            <StackPanel>
+              <TextBlock Text="ℹ️ ملاحظة" FontWeight="Bold" Foreground="#2563EB" FontSize="14" />
+              <TextBlock Text="مدة الجمعية الافتراضية هي 6 أشهر (26 أسبوع × 7 أيام = 182 يوم). عند انتهاء المدة، يمكنك أرشفة البيانات وبدء جمعية جديدة." 
+                         Foreground="#1E40AF" FontSize="13" Margin="0,5,0,0" TextWrapping="Wrap" />
+            </StackPanel>
+          </Border>
+        </StackPanel>
+      </Border>
+    </StackPanel>
+  </ScrollViewer>
+</UserControl>

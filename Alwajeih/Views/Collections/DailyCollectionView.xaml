@@ -1,0 +1,1351 @@
+<UserControl
+  x:Class="Alwajeih.Views.Collections.DailyCollectionView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  FlowDirection="RightToLeft"
+  FontFamily="{StaticResource Tajawal}"
+  FontSize="14"
+  xmlns:vm="clr-namespace:Alwajeih.ViewModels.Collections"
+  xmlns:converters="clr-namespace:Alwajeih.Utilities.Converters"
+>
+  <UserControl.DataContext>
+    <vm:DailyCollectionViewModel />
+  </UserControl.DataContext>
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Resources/Styles/ScrollBarStyles.xaml" />
+        <ResourceDictionary Source="/Resources/Styles/DataGrids.xaml" />
+        <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
+        <ResourceDictionary Source="/Resources/Styles/Buttons.xaml" />
+        <ResourceDictionary Source="/Resources/Styles/MainStyles.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+      <converters:TupleDayConverter x:Key="TupleDayConverter" />
+      <converters:MultiplyBySevenConverter x:Key="MultiplyBySevenConverter" />
+      <converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+      <converters:FrequencyToBrushConverter x:Key="FrequencyToBrushConverter" />
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Grid Background="#F8FAFC">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+
+    <!-- العنوان -->
+    <StackPanel Grid.Row="0" Margin="30,25,30,20">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        
+        <StackPanel Grid.Column="0">
+          <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+            <TextBlock Text="💵" FontSize="24" Margin="0,0,10,0" VerticalAlignment="Center" />
+            <TextBlock
+              Text="التحصيل"
+              FontSize="22"
+              FontWeight="Bold"
+              Foreground="#1E293B"
+              VerticalAlignment="Center"
+            />
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" Margin="34,0,0,0">
+            <TextBlock
+              Text="تحصيل المبالغ (يومي / أسبوعي) - 26 أسبوع × 7 أيام = 182 يوم"
+              FontSize="13"
+              Foreground="#64748B"
+            />
+            <TextBlock
+              Text=" | اليوم الحالي: "
+              FontSize="13"
+              Foreground="#3B82F6"
+              FontWeight="Medium"
+            />
+            <TextBlock
+              Text="{Binding CurrentDayDisplay}"
+              FontSize="13"
+              Foreground="#3B82F6"
+              FontWeight="Bold"
+            />
+          </StackPanel>
+        </StackPanel>
+        
+        <!-- زر إنشاء المتأخرات -->
+        <Button Grid.Column="1"
+                Command="{Binding CreateMissingArrearsCommand}"
+                Height="45"
+                Padding="20,0"
+                Background="#EF4444"
+                BorderBrush="#DC2626"
+                BorderThickness="1"
+                Cursor="Hand">
+          <Button.Style>
+            <Style TargetType="Button">
+              <Setter Property="Template">
+                <Setter.Value>
+                  <ControlTemplate TargetType="Button">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8"
+                            Padding="{TemplateBinding Padding}">
+                      <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                      <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#DC2626"/>
+                      </Trigger>
+                    </ControlTemplate.Triggers>
+                  </ControlTemplate>
+                </Setter.Value>
+              </Setter>
+            </Style>
+          </Button.Style>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="⚠️" FontSize="18" Margin="0,0,8,0" VerticalAlignment="Center"/>
+            <TextBlock Text="إنشاء متأخرات اليوم" FontSize="14" FontWeight="SemiBold" Foreground="White" VerticalAlignment="Center"/>
+          </StackPanel>
+        </Button>
+      </Grid>
+    </StackPanel>
+    
+    <!-- التبويبات -->
+    <TabControl Grid.Row="1" Margin="30,0,30,25" Background="Transparent" BorderThickness="0">
+            <TabControl.Resources>
+                <Style TargetType="TabItem">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate TargetType="TabItem">
+                                <Border x:Name="Border" Background="White" BorderBrush="#E2E8F0" BorderThickness="1,1,1,0" 
+                        CornerRadius="12,12,0,0" Padding="24,12" Margin="0,0,8,0">
+                                    <ContentPresenter ContentSource="Header" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter TargetName="Border" Property="Background" Value="White" />
+                                        <Setter TargetName="Border" Property="BorderBrush" Value="#2563EB" />
+                                        <Setter TargetName="Border" Property="BorderThickness" Value="2,2,2,0" />
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="False">
+                                        <Setter TargetName="Border" Property="Background" Value="#F8FAFC" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Resources>
+
+            <!-- تبويب التحصيل اليومي -->
+      <TabItem>
+        <TabItem.Header>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="📅" FontSize="16" Margin="0,0,8,0" />
+            <TextBlock Text="التحصيل اليومي" FontSize="15" FontWeight="SemiBold" />
+          </StackPanel>
+        </TabItem.Header>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{StaticResource ModernScrollViewer}">
+          <StackPanel Margin="20">
+        <Grid Margin="0">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="150" />
+            <ColumnDefinition Width="320" />
+          </Grid.ColumnDefinitions>
+          <!-- الحصص المستحقة -->
+          <Border
+            Grid.Column="0"
+            Background="White"
+            CornerRadius="12" Padding="20"
+            Margin="0,0,15,0"
+          >
+            <Border.Effect>
+              <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.08" />
+            </Border.Effect>
+            <StackPanel>
+              <Grid Margin="0,0,0,15">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" MinWidth="150" />
+                  <ColumnDefinition Width="Auto" />
+                  <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="📅" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center" />
+                  <TextBlock
+                    Text="الحصص المستحقة"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Foreground="#1E293B"
+                    VerticalAlignment="Center"
+                  />
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="0,0,10,0">
+                  <TextBlock
+                    Text="الأسبوع:"
+                    VerticalAlignment="Center"
+                    Margin="0,0,8,0"
+                    FontWeight="Medium"
+                  />
+                  <ComboBox
+                    ItemsSource="{Binding Weeks}"
+                    SelectedItem="{Binding SelectedWeek}"
+                    Width="Auto" MinWidth="80"
+                    Style="{StaticResource ModernComboBox}"
+                  />
+                </StackPanel>
+                <StackPanel Grid.Column="2" Orientation="Horizontal">
+                  <TextBlock
+                    Text="اليوم:"
+                    VerticalAlignment="Center"
+                    Margin="0,0,8,0"
+                    FontWeight="Medium"
+                  />
+                  <ComboBox
+                    ItemsSource="{Binding Days}"
+                    SelectedItem="{Binding SelectedDay}"
+                    Width="Auto" MinWidth="100"
+                    Style="{StaticResource ModernComboBox}"
+                  >
+                    <ComboBox.ItemTemplate>
+                      <DataTemplate>
+                        <TextBlock Text="{Binding Converter={StaticResource TupleDayConverter}}" 
+                                   Foreground="#1E293B"
+                                   FontSize="13"/>
+                      </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                  </ComboBox>
+                </StackPanel>
+              </Grid>
+              
+              <!-- شريط البحث -->
+              <Border Background="White" CornerRadius="10" Padding="12,10" Margin="0,12,0,8" BorderBrush="#E2E8F0" BorderThickness="1">
+                <Grid>
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                  </Grid.ColumnDefinitions>
+                  <TextBlock Text="🔍" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                  <TextBox Grid.Column="1"
+                           Text="{Binding DailySearchText, UpdateSourceTrigger=PropertyChanged}"
+                           FontSize="14"
+                           Padding="8,6"
+                           BorderThickness="0"
+                           Background="Transparent"
+                           VerticalContentAlignment="Center">
+                    <TextBox.Style>
+                      <Style TargetType="TextBox">
+                        <Setter Property="Foreground" Value="#1E293B"/>
+                        <Style.Triggers>
+                          <Trigger Property="Text" Value="">
+                            <Setter Property="Background">
+                              <Setter.Value>
+                                <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                                  <VisualBrush.Visual>
+                                    <TextBlock Text="ابحث عن عضو..." Foreground="#94A3B8" FontSize="14" Padding="8,0,0,0"/>
+                                  </VisualBrush.Visual>
+                                </VisualBrush>
+                              </Setter.Value>
+                            </Setter>
+                          </Trigger>
+                        </Style.Triggers>
+                      </Style>
+                    </TextBox.Style>
+                  </TextBox>
+                </Grid>
+              </Border>
+              
+              <Border CornerRadius="8" BorderBrush="#E2E8F0" BorderThickness="1" Background="White" Margin="0,0,0,0">
+                <DataGrid
+                  ItemsSource="{Binding DuePlans}"
+                  SelectedItem="{Binding SelectedPlan}"
+                  Height="520"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  Style="{StaticResource ModernDataGrid}"
+                  LoadingRow="DataGrid_LoadingRow"
+                >
+                  <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="#" Width="50">
+                      <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                          <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=Header}" 
+                                     HorizontalAlignment="Center" 
+                                     FontWeight="SemiBold"/>
+                        </DataTemplate>
+                      </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTextColumn Header="العضو" Binding="{Binding MemberName}" Width="2*" />
+                    <DataGridTemplateColumn Header="النوع" Width="0.8*">
+                      <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                          <Border Background="{Binding CollectionFrequency, Converter={StaticResource FrequencyToBrushConverter}}"
+                                 CornerRadius="4"
+                                 Padding="6,3"
+                                 HorizontalAlignment="Center">
+                            <TextBlock Text="{Binding CollectionFrequencyDisplay}" 
+                                      FontSize="11"
+                                      FontWeight="SemiBold"
+                                      Foreground="White"
+                                      HorizontalAlignment="Center"/>
+                          </Border>
+                        </DataTemplate>
+                      </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="المبلغ" Width="1.2*">
+                      <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock FontWeight="SemiBold" Margin="0,0,5,0">
+                              <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                  <Setter Property="Text" Value="{Binding DailyAmount, StringFormat=N2}"/>
+                                  <Setter Property="Foreground" Value="#1E293B"/>
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CollectionFrequency}" Value="Daily">
+                                      <Setter Property="Foreground" Value="#3B82F6"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </TextBlock.Style>
+                            </TextBlock>
+                            <TextBlock Text="ريال" FontSize="10" Foreground="#64748B" VerticalAlignment="Center"/>
+                          </StackPanel>
+                        </DataTemplate>
+                      </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="أسبوعي" Width="1.2*">
+                      <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                          <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock FontWeight="SemiBold" Margin="0,0,5,0">
+                              <TextBlock.Style>
+                                <Style TargetType="TextBlock">
+                                  <Setter Property="Text" Value="{Binding DailyAmount, Converter={StaticResource MultiplyBySevenConverter}, StringFormat=N2}"/>
+                                  <Setter Property="Foreground" Value="#64748B"/>
+                                  <Style.Triggers>
+                                    <DataTrigger Binding="{Binding CollectionFrequency}" Value="Weekly">
+                                      <Setter Property="Foreground" Value="#F59E0B"/>
+                                      <Setter Property="FontWeight" Value="Bold"/>
+                                    </DataTrigger>
+                                  </Style.Triggers>
+                                </Style>
+                              </TextBlock.Style>
+                            </TextBlock>
+                            <TextBlock Text="ريال" FontSize="10" Foreground="#64748B" VerticalAlignment="Center"/>
+                          </StackPanel>
+                        </DataTemplate>
+                      </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <!-- تم تعطيل زر السداد السريع مؤقتاً -->
+                    <!--
+                    <DataGridTemplateColumn Header="الإجراء" Width="Auto" MinWidth="100">
+                      <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                          <Button
+                            Content="✅ سداد"
+                            Command="{Binding DataContext.QuickPayCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                            CommandParameter="{Binding}"
+                            Style="{StaticResource SuccessButton}"
+                            Height="32"
+                            FontSize="12"
+                            Padding="10,0"
+                          />
+                        </DataTemplate>
+                      </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    -->
+                  </DataGrid.Columns>
+                </DataGrid>
+              </Border>
+            </StackPanel>
+          </Border>
+          <!-- نموذج التحصيل -->
+          <Border Grid.Column="1" Background="White" CornerRadius="12" Padding="20">
+            <Border.Effect>
+              <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.08" />
+            </Border.Effect>
+            <StackPanel>
+              <TextBlock Text="💰 تسجيل دفع" Style="{StaticResource SectionTitle}" />
+              <!-- معلومات الحصة المحددة -->
+              <Border
+                Background="{StaticResource Card1Color}"
+                CornerRadius="10"
+                Padding="15"
+                Margin="0,0,0,20"
+              >
+                <StackPanel>
+                  <TextBlock
+                    Text="العضو:"
+                    FontSize="12"
+                    Foreground="{StaticResource TextSecondaryColor}"
+                  />
+                  <TextBlock
+                    Text="{Binding SelectedPlan.MemberName}"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Margin="0,5,0,10"
+                  />
+                  <TextBlock
+                    Text="رقم الحصة:"
+                    FontSize="12"
+                    Foreground="{StaticResource TextSecondaryColor}"
+                  />
+                  <TextBlock
+                    Text="{Binding SelectedPlan.PlanNumber}"
+                    FontSize="16"
+                    FontWeight="SemiBold"
+                    Margin="0,5,0,10"
+                  />
+                  <TextBlock
+                    Text="المبلغ اليومي:"
+                    FontSize="12"
+                    Foreground="{StaticResource TextSecondaryColor}"
+                  />
+                  <TextBlock
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Foreground="{StaticResource GoldColor}"
+                    Margin="0,5,0,0"
+                  >
+                    <Run Text="{Binding SelectedPlan.DailyAmount, StringFormat=N2}" />
+                    <Run Text="ريال" />
+                  </TextBlock>
+                </StackPanel>
+              </Border>
+              <TextBlock Text="المبلغ المدفوع *" Style="{StaticResource FieldLabel}" />
+              <TextBox
+                Text="{Binding AmountPaid}"
+                Style="{StaticResource ModernTextBox}"
+                FontSize="16"
+                Height="50"
+                Margin="0,0,0,20"
+              />
+              <TextBlock Text="نوع الدفع *" Style="{StaticResource FieldLabel}" />
+              <ComboBox
+                SelectedIndex="{Binding PaymentSourceIndex}"
+                Style="{StaticResource ModernComboBox}"
+                Margin="0,0,0,20"
+              >
+                <ComboBoxItem Content="نقد" />
+                <ComboBoxItem Content="كريمي" />
+              </ComboBox>
+              <Button
+                Command="{Binding RecordPaymentCommand}"
+                Style="{StaticResource SuccessButton}"
+                Height="55"
+                Margin="0,0,0,10"
+              >
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="✅" FontSize="22" Margin="0,0,10,0" />
+                  <TextBlock Text="تسجيل الدفع" FontSize="16" />
+                </StackPanel>
+              </Button>
+              <Button
+                Command="{Binding PrintReceiptCommand}"
+                Style="{StaticResource SecondaryButton}"
+                Height="45"
+                Margin="0,0,0,10"
+              >
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="🖨️" FontSize="16" Margin="0,0,10,0" />
+                  <TextBlock Text="طباعة إيصال" />
+                </StackPanel>
+              </Button>
+              <Button
+                Command="{Binding GoToDailySummaryCommand}"
+                Style="{StaticResource SecondaryButton}"
+                Height="45"
+                Background="#3B82F6"
+                Foreground="White"
+                Margin="0,0,0,10"
+              >
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="📊" FontSize="16" Margin="0,0,10,0" />
+                  <TextBlock Text="ملخص اليوم" FontWeight="SemiBold" />
+                </StackPanel>
+              </Button>
+              <Button
+                Command="{Binding GoToWeekSummaryCommand}"
+                Style="{StaticResource SecondaryButton}"
+                Height="45"
+                Background="#F59E0B"
+                Foreground="White"
+              >
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="📅" FontSize="16" Margin="0,0,10,0" />
+                  <TextBlock Text="ملخص الأسبوع" FontWeight="SemiBold" />
+                </StackPanel>
+              </Button>
+            </StackPanel>
+          </Border>
+        </Grid>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+          
+      <!-- تبويب التحصيل الأسبوعي -->
+      <!--<TabItem>
+        <TabItem.Header>
+          <StackPanel Orientation="Horizontal">
+            <TextBlock Text="📊" FontSize="16" Margin="0,0,8,0" />
+            <TextBlock Text="التحصيل الأسبوعي" FontSize="15" FontWeight="SemiBold" />
+          </StackPanel>
+        </TabItem.Header>
+        <TabItem.DataContext>
+          <vm:WeeklyCollectionViewModel />
+        </TabItem.DataContext>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{StaticResource ModernScrollViewer}">
+          <StackPanel Margin="20">
+              <Grid Margin="0">
+                <Grid.ColumnDefinitions>
+                  <ColumnDefinition Width="*" MinWidth="150" />
+                  <ColumnDefinition Width="320" />
+                </Grid.ColumnDefinitions>
+                
+                <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="20" Margin="0,0,15,0">
+                  <Border.Effect>
+                    <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.08" />
+                  </Border.Effect>
+                  <StackPanel>
+                    <Grid Margin="0,0,0,15">
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                      </Grid.ColumnDefinitions>
+                      <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="📆" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center" />
+                        <TextBlock Text="الأعضاء الأسبوعيين" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B" VerticalAlignment="Center" />
+                      </StackPanel>
+                      <StackPanel Grid.Column="1" Orientation="Horizontal">
+                        <TextBlock Text="الأسبوع:" VerticalAlignment="Center" Margin="0,0,8,0" FontWeight="Medium" />
+                        <ComboBox ItemsSource="{Binding Weeks}" SelectedItem="{Binding SelectedWeek}" Width="Auto" MinWidth="80" Style="{StaticResource ModernComboBox}" />
+                      </StackPanel>
+                    </Grid>
+                    
+                    <TextBlock Text="الأعضاء الذين يدفعون أسبوعياً (المبلغ اليومي × 7 أيام)" FontSize="13" Foreground="#64748B" Margin="0,0,0,12" />
+                    
+                    <Border Background="White" CornerRadius="10" Padding="12,10" Margin="0,0,0,12" BorderBrush="#E2E8F0" BorderThickness="1">
+                      <Grid>
+                        <Grid.ColumnDefinitions>
+                          <ColumnDefinition Width="Auto"/>
+                          <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Text="🔍" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1"
+                                 Text="{Binding WeeklySearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 FontSize="14"
+                                 Padding="8,6"
+                                 BorderThickness="0"
+                                 Background="Transparent"
+                                 VerticalContentAlignment="Center">
+                          <TextBox.Style>
+                            <Style TargetType="TextBox">
+                              <Setter Property="Foreground" Value="#1E293B"/>
+                              <Style.Triggers>
+                                <Trigger Property="Text" Value="">
+                                  <Setter Property="Background">
+                                    <Setter.Value>
+                                      <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                                        <VisualBrush.Visual>
+                                          <TextBlock Text="ابحث عن عضو..." Foreground="#94A3B8" FontSize="14" Padding="8,0,0,0"/>
+                                        </VisualBrush.Visual>
+                                      </VisualBrush>
+                                    </Setter.Value>
+                                  </Setter>
+                                </Trigger>
+                              </Style.Triggers>
+                            </Style>
+                          </TextBox.Style>
+                        </TextBox>
+                      </Grid>
+                    </Border>
+                    
+                    <DataGrid ItemsSource="{Binding WeeklyPlans}" SelectedItem="{Binding SelectedPlan}" AutoGenerateColumns="False" IsReadOnly="True" Style="{StaticResource ModernDataGrid}" Height="450" LoadingRow="DataGrid_LoadingRow">
+                      <DataGrid.Columns>
+                        <DataGridTemplateColumn Header="#" Width="50">
+                          <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                              <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=DataGridRow}, Path=Header}" 
+                                         HorizontalAlignment="Center" 
+                                         FontWeight="SemiBold"/>
+                            </DataTemplate>
+                          </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="العضو" Binding="{Binding MemberName}" Width="2*" />
+                        <DataGridTemplateColumn Header="النوع" Width="0.8*">
+                          <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                              <Border Background="{Binding CollectionFrequency, Converter={StaticResource FrequencyToBrushConverter}}"
+                                     CornerRadius="4"
+                                     Padding="6,3"
+                                     HorizontalAlignment="Center">
+                                <TextBlock Text="{Binding CollectionFrequencyDisplay}" 
+                                          FontSize="11"
+                                          FontWeight="SemiBold"
+                                          Foreground="White"
+                                          HorizontalAlignment="Center"/>
+                              </Border>
+                            </DataTemplate>
+                          </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="المبلغ" Width="1.2*">
+                          <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                              <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock FontWeight="SemiBold" Margin="0,0,5,0">
+                                  <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                      <Setter Property="Text" Value="{Binding DailyAmount, StringFormat=N2}"/>
+                                      <Setter Property="Foreground" Value="#1E293B"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CollectionFrequency}" Value="Daily">
+                                          <Setter Property="Foreground" Value="#3B82F6"/>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Text="ريال" FontSize="10" Foreground="#64748B" VerticalAlignment="Center"/>
+                              </StackPanel>
+                            </DataTemplate>
+                          </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="أسبوعي" Width="1.2*">
+                          <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                              <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                <TextBlock FontWeight="SemiBold" Margin="0,0,5,0">
+                                  <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                      <Setter Property="Text" Value="{Binding DailyAmount, Converter={StaticResource MultiplyBySevenConverter}, StringFormat=N2}"/>
+                                      <Setter Property="Foreground" Value="#64748B"/>
+                                      <Style.Triggers>
+                                        <DataTrigger Binding="{Binding CollectionFrequency}" Value="Weekly">
+                                          <Setter Property="Foreground" Value="#F59E0B"/>
+                                          <Setter Property="FontWeight" Value="Bold"/>
+                                        </DataTrigger>
+                                      </Style.Triggers>
+                                    </Style>
+                                  </TextBlock.Style>
+                                </TextBlock>
+                                <TextBlock Text="ريال" FontSize="10" Foreground="#64748B" VerticalAlignment="Center"/>
+                              </StackPanel>
+                            </DataTemplate>
+                          </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTextColumn Header="المحصل" Binding="{Binding TotalPaid, StringFormat=N2}" Width="1.2*" />
+                        <DataGridTextColumn Header="المتبقي" Binding="{Binding RemainingBalance, StringFormat=N2}" Width="1.2*" />
+                      </DataGrid.Columns>
+                    </DataGrid>
+                  </StackPanel>
+                </Border>
+                
+                <Border Grid.Column="1" Background="White" CornerRadius="12" Padding="20">
+                  <Border.Effect>
+                    <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.08" />
+                  </Border.Effect>
+                  <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                      <TextBlock Text="💰" FontSize="18" Margin="0,0,10,0" />
+                      <TextBlock Text="تسجيل الدفع" FontSize="16" FontWeight="SemiBold" />
+                    </StackPanel>
+                    
+                    <TextBlock Text="العضو المحدد" Style="{StaticResource FieldLabel}" Margin="0,0,0,5" />
+                    <TextBox Text="{Binding SelectedPlan.MemberName, Mode=OneWay}" IsReadOnly="True" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15" />
+                    
+                    <TextBlock Text="المبلغ الأسبوعي" Style="{StaticResource FieldLabel}" Margin="0,0,0,5" />
+                    <TextBox Text="{Binding AmountPaid, StringFormat=N2}" Style="{StaticResource ModernTextBox}" Margin="0,0,0,15" />
+                    
+                    <TextBlock Text="نوع الدفع" Style="{StaticResource FieldLabel}" Margin="0,0,0,5" />
+                    <ComboBox SelectedIndex="{Binding PaymentSourceIndex}" Style="{StaticResource ModernComboBox}" Margin="0,0,0,20">
+                      <ComboBoxItem Content="نقد" />
+                      <ComboBoxItem Content="كريمي" />
+                    </ComboBox>
+                    
+                    <Button Command="{Binding RecordPaymentCommand}" Style="{StaticResource SuccessButton}" Height="45" Margin="0,0,0,10">
+                      <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="✅" FontSize="16" Margin="0,0,10,0" />
+                        <TextBlock Text="تسجيل الدفع" FontWeight="SemiBold" />
+                      </StackPanel>
+                    </Button>
+                    
+                    <Button Command="{Binding RefreshCommand}" Style="{StaticResource SecondaryButton}" Height="40">
+                      <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="🔄" FontSize="14" Margin="0,0,8,0" />
+                        <TextBlock Text="تحديث" />
+                      </StackPanel>
+                    </Button>
+                    
+                    <Border Background="#FEF3C7" CornerRadius="8" Padding="15" Margin="0,20,0,0">
+                      <StackPanel>
+                        <TextBlock Text="💡 ملاحظة" FontWeight="SemiBold" Foreground="#92400E" Margin="0,0,0,5" />
+                        <TextBlock Text="المبلغ الأسبوعي = المبلغ اليومي × 7 أيام" FontSize="12" Foreground="#78350F" TextWrapping="Wrap" />
+                      </StackPanel>
+                    </Border>
+                  </StackPanel>
+                </Border>
+              </Grid>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>-->
+
+            <!-- تبويب سداد المتأخرات -->
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="⚠️" FontSize="17" Margin="0,0,8,0" />
+                        <TextBlock Text="سداد متأخرات" FontSize="16" FontWeight="SemiBold" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid Margin="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- الجانب الأيمن: قائمة المتأخرات -->
+                    <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="20" BorderBrush="#E2E8F0" BorderThickness="1">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.08" />
+                        </Border.Effect>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <StackPanel Grid.Row="0" Margin="0,0,0,15">
+                                <TextBlock Text="📋 متأخرات الأسبوع الحالي" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,12"/>
+                                
+                                <!-- شريط البحث -->
+                                <Border Background="#F8FAFC" CornerRadius="8" Padding="10" BorderBrush="#E2E8F0" BorderThickness="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="🔍" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1"
+                                                 Text="{Binding ArrearSearchText, UpdateSourceTrigger=PropertyChanged}"
+                                                 FontSize="13"
+                                                 Padding="6"
+                                                 BorderThickness="0"
+                                                 Background="Transparent"
+                                                 VerticalContentAlignment="Center">
+                                            <TextBox.Style>
+                                                <Style TargetType="TextBox">
+                                                    <Setter Property="Foreground" Value="#1E293B"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="Text" Value="">
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                                                                        <VisualBrush.Visual>
+                                                                            <TextBlock Text="ابحث في المتأخرات..." Foreground="#94A3B8" FontSize="13" Padding="6,0,0,0"/>
+                                                                        </VisualBrush.Visual>
+                                                                    </VisualBrush>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBox.Style>
+                                        </TextBox>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                            
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                <DataGrid ItemsSource="{Binding CurrentWeekArrears}"
+                                          SelectedItem="{Binding SelectedArrear}"
+                                          AutoGenerateColumns="False"
+                                          IsReadOnly="True"
+                                          HeadersVisibility="Column"
+                                          GridLinesVisibility="None"
+                                          BorderThickness="0"
+                                          Background="Transparent"
+                                          RowBackground="White"
+                                          AlternatingRowBackground="#F8FAFC"
+                                          CanUserAddRows="False"
+                                          CanUserDeleteRows="False"
+                                          CanUserResizeRows="False"
+                                          SelectionMode="Single"
+                                          MaxHeight="500">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="العضو" Binding="{Binding MemberName}" Width="2*"/>
+                                    <DataGridTextColumn Header="عدد الأيام" Binding="{Binding DaysCount}" Width="*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="إجمالي المتأخر" Binding="{Binding TotalArrears, StringFormat=N2}" Width="1.3*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#F59E0B"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="المسدد" Binding="{Binding PaidAmount, StringFormat=N2}" Width="1.2*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#10B981"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="المتبقي" Binding="{Binding RemainingAmount, StringFormat=N2}" Width="1.2*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#EF4444"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                </DataGrid.Columns>
+                                </DataGrid>
+                            </ScrollViewer>
+                            
+                            <Border Grid.Row="2" Background="#FEF3C7" CornerRadius="8" Padding="15" Margin="0,15,0,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="إجمالي المتأخرات" FontSize="15" FontWeight="SemiBold" Foreground="#92400E" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding TotalCurrentArrears, StringFormat=N2}" 
+                                               FontSize="18" FontWeight="Bold" Foreground="#F59E0B" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- الجانب الأيسر: نموذج السداد -->
+                    <Border Grid.Column="2" Background="White" CornerRadius="12" Padding="15" BorderBrush="#E2E8F0" BorderThickness="1">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.08" />
+                        </Border.Effect>
+                        <StackPanel>
+                            <TextBlock Text="💰 سداد متأخرة" FontSize="15" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,12"/>
+                            
+                            <!-- بيانات العضو المحدد -->
+                            <Border Background="#F8FAFC" CornerRadius="6" Padding="12" Margin="0,0,0,12"
+                                    Visibility="{Binding SelectedArrear, Converter={StaticResource NullToVisibilityConverter}}">
+                                <StackPanel>
+                                    <TextBlock Text="📋 بيانات العضو" FontSize="13" FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,8"/>
+                                    
+                                    <StackPanel>
+                                        <TextBlock FontSize="13" Foreground="#64748B" Margin="0,0,0,5">
+                                            <Run Text="الاسم:"/>
+                                            <Run Text="{Binding SelectedArrear.MemberName}" FontWeight="SemiBold" Foreground="#1E293B"/>
+                                        </TextBlock>
+                                        <!--<TextBlock FontSize="13" Foreground="#64748B" Margin="0,0,0,5">
+                                            <Run Text="اليوم:"/>
+                                            <Run Text="{Binding SelectedArrear.DayName}" FontWeight="SemiBold" Foreground="#1E293B"/>
+                                        </TextBlock>
+                                        <TextBlock FontSize="13" Foreground="#64748B" Margin="0,0,0,5">
+                                            <Run Text="المستحق:"/>
+                                            <Run Text="{Binding SelectedArrear.AmountDue, StringFormat=N2}" FontWeight="Bold" Foreground="#F59E0B"/>
+                                        </TextBlock>-->
+                                        <TextBlock FontSize="13" Foreground="#64748B">
+                                            <Run Text="المتبقي:"/>
+                                            <Run Text="{Binding SelectedArrear.RemainingAmount, StringFormat=N2}" FontWeight="Bold" Foreground="#EF4444"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- المبلغ المدفوع -->
+                            <TextBlock Text="المبلغ المدفوع" FontSize="13" Foreground="#64748B" Margin="0,0,0,6"/>
+                            <TextBox Height="38" FontSize="14" VerticalContentAlignment="Center" Margin="0,0,0,12"
+                                     Text="{Binding ArrearPaymentAmount, UpdateSourceTrigger=PropertyChanged}"/>
+                            
+                            <!-- مصدر الدفع -->
+                            <TextBlock Text="مصدر الدفع" FontSize="13" Foreground="#64748B" Margin="0,0,0,6"/>
+                            <ComboBox Height="38" FontSize="14" SelectedIndex="0" Margin="0,0,0,12">
+                                <ComboBoxItem Content="💵 نقداً"/>
+                                <ComboBoxItem Content="🏦 كريمي"/>
+                            </ComboBox>
+                            
+                            <!-- الملاحظات -->
+                            <TextBlock Text="الملاحظات" FontSize="13" Foreground="#64748B" Margin="0,0,0,6"/>
+                            <TextBox Height="70" FontSize="13" TextWrapping="Wrap" AcceptsReturn="True"
+                                     VerticalContentAlignment="Top" Padding="8" Margin="0,0,0,12"
+                                     Text="{Binding ArrearPaymentNotes, UpdateSourceTrigger=PropertyChanged}"/>
+                            
+                            <!-- زر السداد -->
+                            <Button Height="40" 
+                                    Background="#F59E0B" 
+                                    Foreground="White"
+                                    FontSize="14" 
+                                    FontWeight="SemiBold"
+                                    BorderThickness="0"
+                                    Cursor="Hand"
+                                    Command="{Binding PayArrearCommand}">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}"
+                                                            CornerRadius="8"
+                                                            Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#D97706"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="💰" FontSize="18" Margin="0,0,8,0"/>
+                                    <TextBlock Text="سداد المتأخرة" FontSize="15"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- تبويب سداد السابقات -->
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="📋" FontSize="17" Margin="0,0,8,0" />
+                        <TextBlock Text="سداد سابقات" FontSize="16" FontWeight="SemiBold" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid Margin="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- الجانب الأيمن: قائمة السابقات -->
+                    <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="20" BorderBrush="#E2E8F0" BorderThickness="1">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.08" />
+                        </Border.Effect>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <StackPanel Grid.Row="0" Margin="0,0,0,15">
+                                <TextBlock Text="📋 السابقات غير المسددة" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,12"/>
+                                
+                                <!-- شريط البحث -->
+                                <Border Background="#F8FAFC" CornerRadius="8" Padding="10" BorderBrush="#E2E8F0" BorderThickness="1">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="🔍" FontSize="16" Margin="0,0,8,0" VerticalAlignment="Center"/>
+                                        <TextBox Grid.Column="1"
+                                                 Text="{Binding PreviousArrearSearchText, UpdateSourceTrigger=PropertyChanged}"
+                                                 FontSize="13"
+                                                 Padding="6"
+                                                 BorderThickness="0"
+                                                 Background="Transparent"
+                                                 VerticalContentAlignment="Center">
+                                            <TextBox.Style>
+                                                <Style TargetType="TextBox">
+                                                    <Setter Property="Foreground" Value="#1E293B"/>
+                                                    <Style.Triggers>
+                                                        <Trigger Property="Text" Value="">
+                                                            <Setter Property="Background">
+                                                                <Setter.Value>
+                                                                    <VisualBrush AlignmentX="Left" AlignmentY="Center" Stretch="None">
+                                                                        <VisualBrush.Visual>
+                                                                            <TextBlock Text="ابحث في السابقات..." Foreground="#94A3B8" FontSize="13" Padding="6,0,0,0"/>
+                                                                        </VisualBrush.Visual>
+                                                                    </VisualBrush>
+                                                                </Setter.Value>
+                                                            </Setter>
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBox.Style>
+                                        </TextBox>
+                                    </Grid>
+                                </Border>
+                            </StackPanel>
+                            
+                            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                                <DataGrid ItemsSource="{Binding PreviousArrears}"
+                                          SelectedItem="{Binding SelectedPreviousArrear}"
+                                          AutoGenerateColumns="False"
+                                          IsReadOnly="True"
+                                          HeadersVisibility="Column"
+                                          GridLinesVisibility="None"
+                                          BorderThickness="0"
+                                          Background="Transparent"
+                                          RowBackground="White"
+                                          AlternatingRowBackground="#F8FAFC"
+                                          CanUserAddRows="False"
+                                          CanUserDeleteRows="False"
+                                          CanUserResizeRows="False"
+                                          SelectionMode="Single"
+                                          MaxHeight="500">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="العضو" Binding="{Binding MemberName}" Width="2*"/>
+                                    <DataGridTextColumn Header="الأسابيع" Binding="{Binding WeeksRange}" Width="*"/>
+                                    <DataGridTextColumn Header="الإجمالي" Binding="{Binding TotalArrears, StringFormat=N2}" Width="1.2*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#3B82F6"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="المدفوع" Binding="{Binding PaidAmount, StringFormat=N2}" Width="1.2*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#10B981"/>
+                                                <Setter Property="FontWeight" Value="SemiBold"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                    <DataGridTextColumn Header="المتبقي" Binding="{Binding RemainingAmount, StringFormat=N2}" Width="1.2*">
+                                        <DataGridTextColumn.ElementStyle>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="#DC2626"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
+                                            </Style>
+                                        </DataGridTextColumn.ElementStyle>
+                                    </DataGridTextColumn>
+                                </DataGrid.Columns>
+                                </DataGrid>
+                            </ScrollViewer>
+                            
+                            <!-- زر الإدخال السريع -->
+                            <Button Grid.Row="2" Click="QuickEntryButton_Click"
+                                   Height="50" Background="#3B82F6" Foreground="White"
+                                   FontSize="15" FontWeight="Bold" BorderThickness="0" Cursor="Hand"
+                                   Margin="0,10,0,10">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}"
+                                                           CornerRadius="10"
+                                                           Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#2563EB"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="⚡" FontSize="20" Margin="0,0,10,0"/>
+                                    <TextBlock Text="إدخال سريع للسابقات" FontSize="15"/>
+                                </StackPanel>
+                            </Button>
+                            
+                            <!-- ملخص السابقات -->
+                            <Border Grid.Row="3" Background="#F8FAFC" CornerRadius="8" Padding="15" Margin="0,5,0,0" BorderBrush="#E2E8F0" BorderThickness="1">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    
+                                    <!-- الإجمالي -->
+                                    <Grid Grid.Row="0" Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="💰 إجمالي السابقات" FontSize="13" FontWeight="SemiBold" Foreground="#475569" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding TotalPreviousArrears, StringFormat=N2}" 
+                                                   FontSize="16" FontWeight="Bold" Foreground="#3B82F6" VerticalAlignment="Center"/>
+                                    </Grid>
+                                    
+                                    <!-- المدفوع -->
+                                    <Grid Grid.Row="1" Margin="0,0,0,8">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="✅ المدفوع" FontSize="13" FontWeight="SemiBold" Foreground="#475569" VerticalAlignment="Center"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding PaidPreviousArrears, StringFormat=N2}" 
+                                                   FontSize="16" FontWeight="Bold" Foreground="#10B981" VerticalAlignment="Center"/>
+                                    </Grid>
+                                    
+                                    <!-- المتبقي -->
+                                    <Border Grid.Row="2" Background="#FEE2E2" CornerRadius="6" Padding="10">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="⚠️ المتبقي" FontSize="13" FontWeight="Bold" Foreground="#7F1D1D" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding RemainingPreviousArrears, StringFormat=N2}" 
+                                                       FontSize="18" FontWeight="Bold" Foreground="#DC2626" VerticalAlignment="Center"/>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- الجانب الأيسر: نموذج السداد -->
+                    <Border Grid.Column="2" Background="White" CornerRadius="12" Padding="15" BorderBrush="#E2E8F0" BorderThickness="1">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.08" />
+                        </Border.Effect>
+                        <StackPanel>
+                            <TextBlock Text="💰 سداد سابقة" FontSize="15" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,12"/>
+                            
+                            <!-- بيانات العضو المحدد -->
+                            <Border Background="#F8FAFC" CornerRadius="6" Padding="12" Margin="0,0,0,12"
+                                    Visibility="{Binding SelectedPreviousArrear, Converter={StaticResource NullToVisibilityConverter}}">
+                                <StackPanel>
+                                    <TextBlock Text="📋 بيانات العضو" FontSize="13" FontWeight="SemiBold" Foreground="#475569" Margin="0,0,0,8"/>
+                                    
+                                    <StackPanel>
+                                        <TextBlock FontSize="13" Foreground="#64748B" Margin="0,0,0,5">
+                                            <Run Text="الاسم:"/>
+                                            <Run Text="{Binding SelectedPreviousArrear.MemberName}" FontWeight="SemiBold" Foreground="#1E293B"/>
+                                        </TextBlock>
+                                        <TextBlock FontSize="13" Foreground="#64748B" Margin="0,0,0,5">
+                                            <Run Text="الأسابيع:"/>
+                                            <Run Text="{Binding SelectedPreviousArrear.WeeksRange}" FontWeight="SemiBold" Foreground="#1E293B"/>
+                                        </TextBlock>
+                                        <TextBlock FontSize="13" Foreground="#64748B" Margin="0,0,0,5">
+                                            <Run Text="الإجمالي:"/>
+                                            <Run Text="{Binding SelectedPreviousArrear.TotalArrears, StringFormat=N2}" FontWeight="Bold" Foreground="#3B82F6"/>
+                                        </TextBlock>
+                                        <TextBlock FontSize="13" Foreground="#64748B" Margin="0,0,0,5">
+                                            <Run Text="المدفوع:"/>
+                                            <Run Text="{Binding SelectedPreviousArrear.PaidAmount, StringFormat=N2}" FontWeight="Bold" Foreground="#10B981"/>
+                                        </TextBlock>
+                                        <TextBlock FontSize="13" Foreground="#64748B">
+                                            <Run Text="المتبقي:"/>
+                                            <Run Text="{Binding SelectedPreviousArrear.RemainingAmount, StringFormat=N2}" FontWeight="Bold" Foreground="#DC2626"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- المبلغ المدفوع -->
+                            <TextBlock Text="المبلغ المدفوع" FontSize="13" Foreground="#64748B" Margin="0,0,0,6"/>
+                            <TextBox Height="38" FontSize="14" VerticalContentAlignment="Center" Margin="0,0,0,12"
+                                     Text="{Binding PreviousPaymentAmount, UpdateSourceTrigger=PropertyChanged}"/>
+                            
+                            <!-- مصدر الدفع -->
+                            <TextBlock Text="مصدر الدفع" FontSize="13" Foreground="#64748B" Margin="0,0,0,6"/>
+                            <ComboBox Height="38" FontSize="14" SelectedIndex="0" Margin="0,0,0,12">
+                                <ComboBoxItem Content="💵 نقداً"/>
+                                <ComboBoxItem Content="🏦 كريمي"/>
+                            </ComboBox>
+                            
+                            <!-- الملاحظات -->
+                            <TextBlock Text="الملاحظات" FontSize="13" Foreground="#64748B" Margin="0,0,0,6"/>
+                            <TextBox Height="70" FontSize="13" TextWrapping="Wrap" AcceptsReturn="True"
+                                     VerticalContentAlignment="Top" Padding="8" Margin="0,0,0,12"
+                                     Text="{Binding PreviousPaymentNotes, UpdateSourceTrigger=PropertyChanged}"/>
+                            
+                            <!-- زر السداد -->
+                            <Button Height="40" 
+                                    Background="#DC2626" 
+                                    Foreground="White"
+                                    FontSize="14" 
+                                    FontWeight="SemiBold"
+                                    BorderThickness="0"
+                                    Cursor="Hand"
+                                    Command="{Binding PayPreviousArrearCommand}">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}"
+                                                            CornerRadius="8"
+                                                            Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#B91C1C"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="💰" FontSize="18" Margin="0,0,8,0"/>
+                                    <TextBlock Text="سداد السابقة" FontSize="15"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- تبويب الخرجيات والمفقودات -->
+            <TabItem>
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="📦" FontSize="16" Margin="0,0,8,0" />
+                        <TextBlock Text="خرجيات ومفقودات" FontSize="15" FontWeight="SemiBold" />
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid Margin="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <!-- الجانب الأيمن: قائمة العمليات -->
+                    <Border Grid.Column="0" Background="White" CornerRadius="12" Padding="20" BorderBrush="#E2E8F0" BorderThickness="1">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.08" />
+                        </Border.Effect>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock Grid.Row="0" Text="📋 العمليات المسجلة اليوم" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,15"/>
+                            
+                            <DataGrid Grid.Row="1"
+                                      ItemsSource="{Binding OtherTransactions}"
+                                      AutoGenerateColumns="False"
+                                      IsReadOnly="True"
+                                      HeadersVisibility="Column"
+                                      GridLinesVisibility="None"
+                                      BorderThickness="0"
+                                      Background="Transparent"
+                                      RowBackground="White"
+                                      AlternatingRowBackground="#F8FAFC"
+                                      CanUserAddRows="False"
+                                      CanUserDeleteRows="False"
+                                      CanUserResizeRows="False"
+                                      SelectionMode="Single"
+                                      MinHeight="400">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="النوع" Binding="{Binding TransactionType}" Width="*"/>
+                                    <DataGridTextColumn Header="المبلغ" Binding="{Binding Amount, StringFormat=N2}" Width="1.2*"/>
+                                    <DataGridTextColumn Header="العضو" Binding="{Binding MemberName}" Width="1.3*"/>
+                                    <DataGridTextColumn Header="التاريخ" Binding="{Binding TransactionDate, StringFormat=dd/MM/yyyy}" Width="1.2*"/>
+                                    <DataGridTextColumn Header="الملاحظات" Binding="{Binding Notes}" Width="1.5*"/>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                            
+                            <Border Grid.Row="2" Background="#F1F5F9" CornerRadius="8" Padding="15" Margin="0,15,0,0">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="إجمالي اليوم" FontSize="15" FontWeight="SemiBold" Foreground="#1E293B" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding TotalOtherTransactions, StringFormat=N2}" 
+                                               FontSize="18" FontWeight="Bold" Foreground="#EF4444" VerticalAlignment="Center"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- الجانب الأيسر: نموذج الإضافة -->
+                    <Border Grid.Column="2" Background="White" CornerRadius="12" Padding="25" BorderBrush="#E2E8F0" BorderThickness="1">
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.08" />
+                        </Border.Effect>
+                        <StackPanel>
+                            <TextBlock Text="➕ تسجيل عملية جديدة" FontSize="16" FontWeight="SemiBold" Foreground="#1E293B" Margin="0,0,0,20"/>
+                            
+                            <!-- نوع العملية -->
+                            <TextBlock Text="نوع العملية" FontSize="13" Foreground="#64748B" Margin="0,0,0,6"/>
+                            <ComboBox Height="38" FontSize="14" SelectedIndex="0" Margin="0,0,0,15">
+                                <ComboBoxItem Content="📦 خرجية"/>
+                                <ComboBoxItem Content="❌ مفقود"/>
+                                <ComboBoxItem Content="💸 مصروف"/>
+                                <ComboBoxItem Content="📝 أخرى"/>
+                            </ComboBox>
+                            
+                            <!-- المبلغ -->
+                            <TextBlock Text="المبلغ" FontSize="13" Foreground="#64748B" Margin="0,0,0,6"/>
+                            <TextBox Height="38" FontSize="14" VerticalContentAlignment="Center" Margin="0,0,0,15"
+                                     Text="{Binding OtherAmount, UpdateSourceTrigger=PropertyChanged}"/>
+                            
+                            <!-- اسم العضو -->
+                            <TextBlock Text="اسم العضو (اختياري)" FontSize="13" Foreground="#64748B" Margin="0,0,0,6"/>
+                            <TextBox Height="38" FontSize="14" VerticalContentAlignment="Center" Margin="0,0,0,15"/>
+                            
+                            <!-- الملاحظات -->
+                            <TextBlock Text="الملاحظات" FontSize="13" Foreground="#64748B" Margin="0,0,0,6"/>
+                            <TextBox Height="120" FontSize="14" TextWrapping="Wrap" AcceptsReturn="True"
+                                     VerticalContentAlignment="Top" Padding="8" Margin="0,0,0,20"
+                                     Text="{Binding OtherNotes, UpdateSourceTrigger=PropertyChanged}"/>
+                            
+                            <!-- زر الإضافة -->
+                            <Button Height="45" 
+                                    Background="#10B981" 
+                                    Foreground="White"
+                                    FontSize="15" 
+                                    FontWeight="SemiBold"
+                                    BorderThickness="0"
+                                    Cursor="Hand"
+                                    Command="{Binding AddOtherTransactionCommand}">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}"
+                                                            CornerRadius="8"
+                                                            Padding="{TemplateBinding Padding}">
+                                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#059669"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="➕" FontSize="18" Margin="0,0,8,0"/>
+                                    <TextBlock Text="إضافة عملية" FontSize="15"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </TabItem>
+        </TabControl>
+  </Grid>
+</UserControl>

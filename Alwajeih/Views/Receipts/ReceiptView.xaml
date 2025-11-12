@@ -1,0 +1,81 @@
+﻿<UserControl x:Class="Alwajeih.Views.Receipts.ReceiptView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             FlowDirection="RightToLeft"
+             FontFamily="{StaticResource Tajawal}"
+             FontSize="14"
+             xmlns:vm="clr-namespace:Alwajeih.ViewModels.Receipts">
+    <UserControl.DataContext>
+        <vm:ReceiptViewModel/>
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/Colors.xaml"/>
+                <ResourceDictionary Source="/Resources/Styles/Buttons.xaml"/>
+                <ResourceDictionary Source="/Resources/Styles/MainStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Background="{StaticResource BackgroundColor}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="20">
+            <TextBlock Text="🧾" FontSize="36" Margin="0,0,15,0"/>
+            <TextBlock Text="الإيصالات" Style="{StaticResource PageTitle}"/>
+        </StackPanel>
+        <Grid Grid.Row="1" Margin="20">
+            <Border Style="{StaticResource ModernCard}">
+                <StackPanel MaxWidth="600">
+                    <TextBlock Text="🔍 البحث عن إيصال" Style="{StaticResource SectionTitle}"/>
+                    <Grid Margin="0,0,0,30">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0" Text="{Binding ReceiptNumber}" Style="{StaticResource SearchBox}" Margin="0,0,10,0"/>
+                        <Button Grid.Column="1" Command="{Binding SearchCommand}" Style="{StaticResource PrimaryButton}" Width="120">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="🔍" FontSize="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="بحث"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+                    <Border Background="{StaticResource Card2Color}" CornerRadius="15" Padding="25" Visibility="{Binding CurrentReceipt, Converter={StaticResource NullToVisibility}}">
+                        <StackPanel>
+                            <TextBlock Text="🧾 معلومات الإيصال" FontSize="18" FontWeight="Bold" Margin="0,0,0,20" HorizontalAlignment="Center"/>
+                            <TextBlock Text="{Binding CurrentReceipt.ReceiptNumber}" FontSize="16" HorizontalAlignment="Center" Margin="0,0,0,20"/>
+                            <Separator Margin="0,10"/>
+                            <Grid Margin="0,15,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="العضو:" FontSize="12"/>
+                                    <TextBlock Text="{Binding CurrentReceipt.MemberName}" FontWeight="SemiBold" Margin="0,5,0,15"/>
+                                    <TextBlock Text="رقم الحصة:" FontSize="12"/>
+                                    <TextBlock Text="{Binding CurrentReceipt.PlanNumber}" FontWeight="SemiBold" Margin="0,5,0,0"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1">
+                                    <TextBlock Text="المبلغ:" FontSize="12"/>
+                                    <TextBlock FontWeight="Bold" FontSize="16" Foreground="{StaticResource GoldColor}" Margin="0,5,0,0">
+                                        <Run Text="{Binding CurrentReceipt.AmountPaid, StringFormat=N2}"/> <Run Text="ريال"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                            <Button Command="{Binding PrintCommand}" Style="{StaticResource PrimaryButton}" Height="50" Margin="0,25,0,0">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="🖨️" FontSize="18" Margin="0,0,10,0"/>
+                                    <TextBlock Text="طباعة الإيصال" FontSize="16"/>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

@@ -1,0 +1,86 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    
+    <!-- 💰 لوحة ألوان نظام الادخار - ألوان الثقة والنمو المالي -->
+    
+    <!-- الألوان الأساسية - الأزرق الداكن (الثقة والاستقرار المالي) -->
+    <SolidColorBrush x:Key="PrimaryColor" Color="#1E3A8A"/><!-- أزرق داكن مالي -->
+    <SolidColorBrush x:Key="PrimaryLightColor" Color="#3B82F6"/><!-- أزرق فاتح -->
+    <SolidColorBrush x:Key="PrimaryDarkColor" Color="#1E40AF"/><!-- أزرق غامق -->
+    
+    <!-- الألوان الثانوية - الذهبي (الثروة والادخار) -->
+    <SolidColorBrush x:Key="SecondaryColor" Color="#F59E0B"/><!-- ذهبي/برتقالي -->
+    <SolidColorBrush x:Key="SecondaryLightColor" Color="#FCD34D"/><!-- ذهبي فاتح -->
+    <SolidColorBrush x:Key="SecondaryDarkColor" Color="#D97706"/><!-- ذهبي غامق -->
+    
+    <!-- خلفيات فاتحة وناعمة -->
+    <SolidColorBrush x:Key="BackgroundColor" Color="#F8F9FE"/><!-- أبيض مزرق فاتح -->
+    <SolidColorBrush x:Key="SurfaceColor" Color="#FFFFFF"/><!-- أبيض نقي -->
+    <SolidColorBrush x:Key="CardBackgroundColor" Color="#FEFEFE"/><!-- أبيض للكروت -->
+    
+    <!-- ألوان الحالات - تعبر عن النمو والتحذير والمعلومات -->
+    <SolidColorBrush x:Key="SuccessColor" Color="#10B981"/><!-- أخضر نمو مالي -->
+    <SolidColorBrush x:Key="SuccessLightColor" Color="#6EE7B7"/><!-- أخضر فاتح -->
+    
+    <SolidColorBrush x:Key="WarningColor" Color="#F59E0B"/><!-- برتقالي تحذيري -->
+    <SolidColorBrush x:Key="WarningLightColor" Color="#FCD34D"/><!-- برتقالي فاتح -->
+    
+    <SolidColorBrush x:Key="ErrorColor" Color="#EF4444"/><!-- أحمر للأخطاء -->
+    <SolidColorBrush x:Key="ErrorLightColor" Color="#FCA5A5"/><!-- أحمر فاتح -->
+    
+    <SolidColorBrush x:Key="InfoColor" Color="#3B82F6"/><!-- أزرق معلوماتي -->
+    <SolidColorBrush x:Key="InfoLightColor" Color="#93C5FD"/><!-- أزرق فاتح -->
+    
+    <!-- ألوان النصوص - ناعمة على العين -->
+    <SolidColorBrush x:Key="TextPrimaryColor" Color="#2D3748"/><!-- رمادي داكن ناعم -->
+    <SolidColorBrush x:Key="TextSecondaryColor" Color="#718096"/><!-- رمادي متوسط -->
+    <SolidColorBrush x:Key="TextDisabledColor" Color="#CBD5E0"/><!-- رمادي فاتح -->
+    <SolidColorBrush x:Key="TextOnPrimaryColor" Color="#FFFFFF"/><!-- أبيض للنص على الألوان الداكنة -->
+    
+    <!-- حدود وفواصل ناعمة -->
+    <SolidColorBrush x:Key="BorderColor" Color="#E2E8F0"/><!-- رمادي فاتح جداً -->
+    <SolidColorBrush x:Key="DividerColor" Color="#EDF2F7"/><!-- رمادي فاتح للفواصل -->
+    <SolidColorBrush x:Key="ShadowColor" Color="#1A000000"/><!-- ظل خفيف جداً -->
+    
+    <!-- ألوان مالية خاصة -->
+    <SolidColorBrush x:Key="GoldColor" Color="#FBBF24"/><!-- ذهبي ثري -->
+    <SolidColorBrush x:Key="GoldLightColor" Color="#FDE68A"/><!-- ذهبي فاتح -->
+    
+    <SolidColorBrush x:Key="GreenColor" Color="#10B981"/><!-- أخضر نمو -->
+    <SolidColorBrush x:Key="RedColor" Color="#EF4444"/><!-- أحمر خسارة -->
+    <SolidColorBrush x:Key="OrangeColor" Color="#F59E0B"/><!-- برتقالي -->
+    <SolidColorBrush x:Key="BlueColor" Color="#3B82F6"/><!-- أزرق ثقة -->
+    <SolidColorBrush x:Key="NavyColor" Color="#1E3A8A"/><!-- أزرق داكن -->
+    <SolidColorBrush x:Key="TealColor" Color="#14B8A6"/><!-- تركواز احترافي -->
+    <SolidColorBrush x:Key="BronzeColor" Color="#92400E"/><!-- برونزي -->
+    
+    <!-- ألوان خاصة للكروت المالية -->
+    <SolidColorBrush x:Key="Card1Color" Color="#DBEAFE"/><!-- أزرق فاتح (معلومات) -->
+    <SolidColorBrush x:Key="Card2Color" Color="#FEF3C7"/><!-- ذهبي فاتح (ادخار) -->
+    <SolidColorBrush x:Key="Card3Color" Color="#D1FAE5"/><!-- أخضر فاتح (نمو) -->
+    <SolidColorBrush x:Key="Card4Color" Color="#FEE2E2"/><!-- أحمر فاتح (متأخرات) -->
+    
+    <!-- Gradients مالية احترافية -->
+    <LinearGradientBrush x:Key="PrimaryGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#1E3A8A" Offset="0"/><!-- أزرق داكن -->
+        <GradientStop Color="#3B82F6" Offset="1"/><!-- أزرق فاتح -->
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="SuccessGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#10B981" Offset="0"/><!-- أخضر نمو -->
+        <GradientStop Color="#6EE7B7" Offset="1"/><!-- أخضر فاتح -->
+    </LinearGradientBrush>
+    
+    <LinearGradientBrush x:Key="GoldGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#F59E0B" Offset="0"/><!-- ذهبي -->
+        <GradientStop Color="#FCD34D" Offset="1"/><!-- ذهبي فاتح -->
+    </LinearGradientBrush>
+    
+    <!-- Gradient خاص بالادخار -->
+    <LinearGradientBrush x:Key="SavingsGradient" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Color="#1E3A8A" Offset="0"/><!-- أزرق -->
+        <GradientStop Color="#10B981" Offset="0.5"/><!-- أخضر -->
+        <GradientStop Color="#FBBF24" Offset="1"/><!-- ذهبي -->
+    </LinearGradientBrush>
+    
+</ResourceDictionary>

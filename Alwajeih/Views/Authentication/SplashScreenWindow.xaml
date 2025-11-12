@@ -1,0 +1,222 @@
+<Window x:Class="Alwajeih.Views.Authentication.SplashScreenWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="الوجيه" 
+        Height="500" Width="700"
+        WindowStyle="None" 
+        AllowsTransparency="True" 
+        Background="Transparent"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize">
+    
+    <Window.Resources>
+        <Storyboard x:Key="LoadingAnimation">
+            <!-- Fade In للشعار -->
+            <DoubleAnimation Storyboard.TargetName="Logo"
+                           Storyboard.TargetProperty="Opacity"
+                           From="0" To="1" Duration="0:0:1"/>
+            
+            <!-- Scale للشعار -->
+            <DoubleAnimation Storyboard.TargetName="LogoScale"
+                           Storyboard.TargetProperty="ScaleX"
+                           From="0.5" To="1" Duration="0:0:1"/>
+            <DoubleAnimation Storyboard.TargetName="LogoScale"
+                           Storyboard.TargetProperty="ScaleY"
+                           From="0.5" To="1" Duration="0:0:1"/>
+            
+            <!-- Progress Bar متحرك -->
+            <DoubleAnimation Storyboard.TargetName="ProgressBar"
+                           Storyboard.TargetProperty="Value"
+                           From="0" To="100" Duration="0:0:2"/>
+        </Storyboard>
+    </Window.Resources>
+    
+    <Border CornerRadius="20">
+        <Border.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#F8FAFC" Offset="0"/>
+                <GradientStop Color="#E2E8F0" Offset="0.5"/>
+                <GradientStop Color="#CBD5E1" Offset="1"/>
+            </LinearGradientBrush>
+        </Border.Background>
+        <Border.Effect>
+            <DropShadowEffect Color="#94A3B8" Direction="0" ShadowDepth="0" BlurRadius="30" Opacity="0.4"/>
+        </Border.Effect>
+        
+        <Grid>
+            <!-- محتوى Splash Screen -->
+            <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                
+                <!-- الشعار مع زخارف سعودية -->
+                <Viewbox Width="200" Height="200" x:Name="Logo" Opacity="0">
+                    <Viewbox.RenderTransform>
+                        <ScaleTransform x:Name="LogoScale" ScaleX="0.5" ScaleY="0.5"/>
+                    </Viewbox.RenderTransform>
+                    
+                    <Grid Width="200" Height="200">
+                        <!-- دائرة خارجية ذهبية -->
+                        <Ellipse Width="200" Height="200" 
+                                Stroke="#F59E0B" 
+                                StrokeThickness="4" 
+                                Fill="Transparent" 
+                                Opacity="0.6"/>
+                        
+                        <!-- دائرة ثانية للتأثير -->
+                        <Ellipse Width="190" Height="190" 
+                                Stroke="#FCD34D" 
+                                StrokeThickness="2" 
+                                Fill="Transparent" 
+                                Opacity="0.4"
+                                StrokeDashArray="2 4"/>
+                        
+                        <!-- الخلفية الزرقاء -->
+                        <Ellipse Width="170" Height="170">
+                            <Ellipse.Fill>
+                                <RadialGradientBrush>
+                                    <GradientStop Color="#1E40AF" Offset="0"/>
+                                    <GradientStop Color="#2563EB" Offset="0.5"/>
+                                    <GradientStop Color="#3B82F6" Offset="1"/>
+                                </RadialGradientBrush>
+                            </Ellipse.Fill>
+                            <Ellipse.Effect>
+                                <DropShadowEffect Color="#2563EB" BlurRadius="25" ShadowDepth="0" Opacity="0.4"/>
+                            </Ellipse.Effect>
+                        </Ellipse>
+                        
+                        <!-- تأثير الضوء -->
+                        <Ellipse Width="150" Height="150" Opacity="0.2">
+                            <Ellipse.Fill>
+                                <RadialGradientBrush>
+                                    <GradientStop Color="White" Offset="0"/>
+                                    <GradientStop Color="Transparent" Offset="1"/>
+                                </RadialGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        
+                        <!-- المحتوى -->
+                        <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                            <!-- الأيقونة -->
+                            <TextBlock Text="💰" 
+                                     FontSize="70" 
+                                     HorizontalAlignment="Center"
+                                     Margin="0,0,0,8">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect Color="White" BlurRadius="15" ShadowDepth="0" Opacity="0.6"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                            
+                            <!-- النص -->
+                            <TextBlock Text="الوجيه" 
+                                     FontSize="38" 
+                                     FontWeight="Bold" 
+                                     Foreground="White"
+                                     HorizontalAlignment="Center"
+                                     FontFamily="Tajawal"
+                                     FlowDirection="RightToLeft">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect Color="#1E40AF" BlurRadius="10" ShadowDepth="2" Opacity="0.5"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                        </StackPanel>
+                    </Grid>
+                </Viewbox>
+                
+                <!-- اسم التطبيق -->
+                <TextBlock Text="الوجيه" 
+                         FontSize="42" 
+                         FontWeight="Bold" 
+                         Foreground="#1E40AF" 
+                         HorizontalAlignment="Center" 
+                         Margin="0,35,0,10"
+                         FontFamily="Tajawal"
+                         FlowDirection="RightToLeft">
+                    <TextBlock.Effect>
+                        <DropShadowEffect Color="#3B82F6" BlurRadius="8" ShadowDepth="0" Opacity="0.3"/>
+                    </TextBlock.Effect>
+                </TextBlock>
+                
+                <TextBlock Text="نظام إدارة الادخار والجمعيات" 
+                         FontSize="16" 
+                         FontWeight="Medium"
+                         Foreground="#64748B" 
+                         HorizontalAlignment="Center"
+                         FontFamily="Tajawal"
+                         FlowDirection="RightToLeft"/>
+                
+                <!-- Progress Bar محسّن -->
+                <Border Width="320" 
+                        Height="6" 
+                        Background="#E2E8F0" 
+                        CornerRadius="3"
+                        Margin="0,40,0,0">
+                    <Border.Effect>
+                        <DropShadowEffect Color="#94A3B8" BlurRadius="8" ShadowDepth="2" Opacity="0.1"/>
+                    </Border.Effect>
+                    
+                    <ProgressBar x:Name="ProgressBar" 
+                               Minimum="0" 
+                               Maximum="100" 
+                               Value="0"
+                               BorderThickness="0"
+                               Background="Transparent" FlowDirection="RightToLeft">
+                        <ProgressBar.Foreground>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                <GradientStop Color="#3B82F6" Offset="0"/>
+                                <GradientStop Color="#2563EB" Offset="0.5"/>
+                                <GradientStop Color="#1E40AF" Offset="1"/>
+                            </LinearGradientBrush>
+                        </ProgressBar.Foreground>
+                        <ProgressBar.Style>
+                            <Style TargetType="ProgressBar">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="ProgressBar">
+                                            <Grid>
+                                                <Border Name="PART_Track" Background="{TemplateBinding Background}" CornerRadius="3"/>
+                                                <Border Name="PART_Indicator" 
+                                                        HorizontalAlignment="Left" 
+                                                        Background="{TemplateBinding Foreground}"
+                                                        CornerRadius="3"/>
+                                            </Grid>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </ProgressBar.Style>
+                    </ProgressBar>
+                </Border>
+                
+                <!-- نص التحميل -->
+                <TextBlock Text="جاري التحميل..." 
+                         FontSize="14" 
+                         FontWeight="Medium"
+                         Foreground="#64748B" 
+                         HorizontalAlignment="Center" 
+                         Margin="0,16,0,0"
+                         FontFamily="Tajawal" 
+                         FlowDirection="RightToLeft"/>
+            </StackPanel>
+            
+            <!-- معلومات الإصدار -->
+            <StackPanel Orientation="Horizontal" 
+                       HorizontalAlignment="Center" 
+                       VerticalAlignment="Bottom" 
+                       Margin="0,0,0,20"
+                       FlowDirection="RightToLeft">
+                <TextBlock Text="الإصدار " 
+                         FontSize="12" 
+                         Foreground="#94A3B8" 
+                         FontFamily="Tajawal"/>
+                <TextBlock Text="1.0.0" 
+                         FontSize="12" 
+                         FontWeight="SemiBold"
+                         Foreground="#64748B" 
+                         FontFamily="Tajawal"/>
+                <TextBlock Text=" • 2025" 
+                         FontSize="12" 
+                         Foreground="#94A3B8" 
+                         FontFamily="Tajawal"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

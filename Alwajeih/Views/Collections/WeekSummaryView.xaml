@@ -1,0 +1,471 @@
+<UserControl
+  x:Class="Alwajeih.Views.Collections.WeekSummaryView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  FlowDirection="RightToLeft"
+  FontFamily="{StaticResource Tajawal}"
+  FontSize="14"
+  xmlns:vm="clr-namespace:Alwajeih.ViewModels.Collections"
+>
+  <UserControl.DataContext>
+    <vm:WeekSummaryViewModel />
+  </UserControl.DataContext>
+  <UserControl.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Resources/Styles/ScrollBarStyles.xaml" />
+        <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
+        <ResourceDictionary Source="/Resources/Styles/Buttons.xaml" />
+        <ResourceDictionary Source="/Resources/Styles/MainStyles.xaml" />
+        <ResourceDictionary Source="/Resources/Styles/DataGrids.xaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </UserControl.Resources>
+  <Grid Background="#F8FAFC">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+    </Grid.RowDefinitions>
+    
+    <!-- الهيدر العلوي -->
+    <Border Grid.Row="0" Background="White" Padding="20,15" BorderBrush="#E2E8F0" BorderThickness="0,0,0,1">
+      <Border.Effect>
+        <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.06" />
+      </Border.Effect>
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        
+        <!-- العنوان والوصف -->
+        <StackPanel Grid.Column="0" VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
+            <TextBlock Text="📊" FontSize="24" Margin="0,0,10,0" VerticalAlignment="Center" />
+            <TextBlock
+              Text="ملخص الأسبوع"
+              FontSize="22"
+              FontWeight="Bold"
+              Foreground="#1E293B"
+              VerticalAlignment="Center"
+            />
+          </StackPanel>
+          <TextBlock
+            Text="عرض تفصيلي لتحصيلات الأسبوع"
+            FontSize="13"
+            Foreground="#64748B"
+            Margin="34,0,0,0"
+          />
+        </StackPanel>
+        
+        <!-- التنقل بين الأسابيع -->
+        <Border
+          Grid.Column="2"
+          Background="#F8FAFC"
+          CornerRadius="10"
+          Padding="8"
+          BorderBrush="#E2E8F0"
+          BorderThickness="1"
+        >
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <Button
+              Command="{Binding PreviousWeekCommand}"
+              Width="36"
+              Height="36"
+              Background="White"
+              BorderBrush="#CBD5E1"
+              BorderThickness="1"
+              Margin="0,0,8,0"
+              Cursor="Hand"
+              Style="{StaticResource SecondaryButton}"
+            >
+              <TextBlock
+                Text="◄"
+                FontSize="14"
+                Foreground="#475569"
+                FontWeight="Bold"
+              />
+            </Button>
+            
+            <Border
+              Background="White"
+              CornerRadius="8"
+              Padding="15,8"
+              BorderBrush="#CBD5E1"
+              BorderThickness="1"
+              Margin="0,0,8,0"
+            >
+              <StackPanel Orientation="Horizontal">
+                <TextBlock
+                  Text="الأسبوع"
+                  FontSize="14"
+                  FontWeight="Medium"
+                  Foreground="#64748B"
+                  Margin="0,0,8,0"
+                  VerticalAlignment="Center"
+                />
+                <TextBlock
+                  Text="{Binding CurrentWeek}"
+                  FontSize="18"
+                  FontWeight="Bold"
+                  Foreground="#3B82F6"
+                  VerticalAlignment="Center"
+                />
+              </StackPanel>
+            </Border>
+            
+            <Button
+              Command="{Binding NextWeekCommand}"
+              Width="36"
+              Height="36"
+              Background="White"
+              BorderBrush="#CBD5E1"
+              BorderThickness="1"
+              Cursor="Hand"
+              Style="{StaticResource SecondaryButton}"
+            >
+              <TextBlock
+                Text="►"
+                FontSize="14"
+                Foreground="#475569"
+                FontWeight="Bold"
+              />
+            </Button>
+          </StackPanel>
+        </Border>
+      </Grid>
+    </Border>
+    <!-- المحتوى الرئيسي -->
+    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Style="{StaticResource ModernScrollViewer}">
+      <StackPanel Margin="20">
+        
+        <!-- بطاقات الإحصائيات الرئيسية -->
+        <Grid Margin="0,0,0,20">
+          <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+          </Grid.RowDefinitions>
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          
+          <!-- المستحقات (ماعليكم) -->
+          <Border Grid.Row="0" Grid.Column="0" Background="White" CornerRadius="12" Padding="20" Margin="0,0,10,10" BorderBrush="#E2E8F0" BorderThickness="1">
+            <Border.Effect>
+              <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.06" />
+            </Border.Effect>
+            <StackPanel>
+              <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <Border Background="#EEF2FF" Width="40" Height="40" CornerRadius="20" Margin="0,0,10,0">
+                  <TextBlock Text="📋" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Text="المستحقات" FontSize="12" Foreground="#64748B" />
+                  <TextBlock Text="(ماعليكم)" FontSize="11" Foreground="#94A3B8" />
+                </StackPanel>
+              </StackPanel>
+              <TextBlock Text="{Binding TotalExpected, StringFormat='{}{0:N2} ريال'}" FontSize="20" FontWeight="Bold" Foreground="#3B82F6" />
+            </StackPanel>
+          </Border>
+          
+          <!-- التحصيلات (الواردات) -->
+          <Border Grid.Row="0" Grid.Column="1" Background="White" CornerRadius="12" Padding="20" Margin="0,0,10,10" BorderBrush="#E2E8F0" BorderThickness="1">
+            <Border.Effect>
+              <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.06" />
+            </Border.Effect>
+            <StackPanel>
+              <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <Border Background="#DCFCE7" Width="40" Height="40" CornerRadius="20" Margin="0,0,10,0">
+                  <TextBlock Text="💰" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Text="التحصيلات" FontSize="12" Foreground="#64748B" />
+                  <TextBlock Text="(الواردات)" FontSize="11" Foreground="#94A3B8" />
+                </StackPanel>
+              </StackPanel>
+              <TextBlock Text="{Binding TotalCollected, StringFormat='{}{0:N2} ريال'}" FontSize="20" FontWeight="Bold" Foreground="#10B981" />
+            </StackPanel>
+          </Border>
+          
+          <!-- المتأخرات -->
+          <Border Grid.Row="0" Grid.Column="2" Background="White" CornerRadius="12" Padding="20" Margin="0,0,10,10" BorderBrush="#E2E8F0" BorderThickness="1">
+            <Border.Effect>
+              <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.06" />
+            </Border.Effect>
+            <StackPanel>
+              <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <Border Background="#FEF3C7" Width="40" Height="40" CornerRadius="20" Margin="0,0,10,0">
+                  <TextBlock Text="⚠️" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Text="المتأخرات" FontSize="12" Foreground="#64748B" />
+                  <TextBlock Text="(غير مسددة)" FontSize="11" Foreground="#94A3B8" />
+                </StackPanel>
+              </StackPanel>
+              <TextBlock Text="{Binding TotalRemaining, StringFormat='{}{0:N2} ريال'}" FontSize="20" FontWeight="Bold" Foreground="#F59E0B" />
+            </StackPanel>
+          </Border>
+          
+          <!-- السابقات المُراكمة -->
+          <Border Grid.Row="0" Grid.Column="3" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,10" BorderBrush="#E2E8F0" BorderThickness="1">
+            <Border.Effect>
+              <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.06" />
+            </Border.Effect>
+            <StackPanel>
+              <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <Border Background="#FEF2F2" Width="40" Height="40" CornerRadius="20" Margin="0,0,10,0">
+                  <TextBlock Text="📋" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Text="السابقات" FontSize="12" Foreground="#64748B" />
+                  <TextBlock Text="(مُراكمة)" FontSize="11" Foreground="#94A3B8" />
+                </StackPanel>
+              </StackPanel>
+              <TextBlock FontSize="20" FontWeight="Bold" Foreground="#DC2626">
+                <Run Text="{Binding PreviousBalance, StringFormat=N2}"/>
+                <Run Text=" ريال" FontSize="14"/>
+              </TextBlock>
+            </StackPanel>
+          </Border>
+          
+          <!-- الخرجيات والمفقودات -->
+          <Border Grid.Row="1" Grid.Column="0" Background="White" CornerRadius="12" Padding="20" Margin="0,0,10,0" BorderBrush="#E2E8F0" BorderThickness="1">
+            <Border.Effect>
+              <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.06" />
+            </Border.Effect>
+            <StackPanel>
+              <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <Border Background="#FEF2F2" Width="40" Height="40" CornerRadius="20" Margin="0,0,10,0">
+                  <TextBlock Text="📦" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Text="الخرجيات" FontSize="12" Foreground="#64748B" />
+                  <TextBlock Text="(مفقود + مصروف)" FontSize="11" Foreground="#94A3B8" />
+                </StackPanel>
+              </StackPanel>
+              <TextBlock FontSize="20" FontWeight="Bold" Foreground="#EF4444">
+                <Run Text="{Binding OtherTransactions, StringFormat=N2}"/>
+                <Run Text=" ريال" FontSize="14"/>
+              </TextBlock>
+            </StackPanel>
+          </Border>
+          
+          <!-- الرصيد النهائي -->
+          <Border Grid.Row="1" Grid.Column="1" Background="White" CornerRadius="12" Padding="20" Margin="0,0,0,0" BorderBrush="#10B981" BorderThickness="2">
+            <Border.Effect>
+              <DropShadowEffect Color="#10B981" BlurRadius="12" ShadowDepth="0" Opacity="0.2" />
+            </Border.Effect>
+            <StackPanel>
+              <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                <Border Background="#DCFCE7" Width="40" Height="40" CornerRadius="20" Margin="0,0,10,0">
+                  <TextBlock Text="💵" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                </Border>
+                <StackPanel VerticalAlignment="Center">
+                  <TextBlock Text="الرصيد النهائي" FontSize="12" Foreground="#64748B" FontWeight="Bold"/>
+                  <TextBlock Text="(الصافي)" FontSize="11" Foreground="#94A3B8" />
+                </StackPanel>
+              </StackPanel>
+              <TextBlock FontSize="22" FontWeight="Bold" Foreground="#10B981">
+                <Run Text="{Binding FinalBalance, StringFormat=N2}"/>
+                <Run Text=" ريال" FontSize="14"/>
+              </TextBlock>
+            </StackPanel>
+          </Border>
+        </Grid>
+        
+        <!-- حقل البحث -->
+        <Border
+          Background="White"
+          CornerRadius="10"
+          Padding="12"
+          Margin="0,0,0,15"
+          BorderThickness="1"
+          BorderBrush="#E2E8F0"
+        >
+          <Grid>
+            <TextBox
+              Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+              Style="{StaticResource ModernTextBox}"
+              Height="42"
+              FontSize="14"
+              Padding="40,8,12,8"
+            />
+            <TextBlock
+              Text="🔍"
+              FontSize="16"
+              IsHitTestVisible="False"
+              VerticalAlignment="Center"
+              Margin="12,0,0,0"
+            />
+            <TextBlock
+              Text="بحث عن عضو..."
+              FontSize="14"
+              Foreground="#94A3B8"
+              IsHitTestVisible="False"
+              VerticalAlignment="Center"
+              Margin="40,0,0,0"
+              Visibility="{Binding SearchText, Converter={StaticResource InverseNullToVisibility}}"
+            />
+          </Grid>
+        </Border>
+        <!-- قائمة التفاصيل -->
+        <Border Background="White" CornerRadius="12" Padding="20" BorderBrush="#E2E8F0" BorderThickness="1">
+          <Border.Effect>
+            <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.06" />
+          </Border.Effect>
+          <StackPanel>
+            <TextBlock
+              Text="📋 تفاصيل التحصيل"
+              FontSize="16"
+              FontWeight="SemiBold"
+              Foreground="#1E293B"
+              Margin="0,0,0,15"
+            />
+            
+            <ItemsControl ItemsSource="{Binding SummaryItems}">
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Border
+                    Background="#F8FAFC"
+                    CornerRadius="8"
+                    Padding="15"
+                    Margin="0,0,0,8"
+                    Cursor="Hand"
+                  >
+                    <Border.InputBindings>
+                      <MouseBinding 
+                        Command="{Binding DataContext.ItemClickCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        CommandParameter="{Binding}"
+                        MouseAction="LeftClick" />
+                    </Border.InputBindings>
+                    <Border.Style>
+                      <Style TargetType="Border">
+                        <Setter Property="Background" Value="#F8FAFC"/>
+                        <Style.Triggers>
+                          <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="#EEF2FF"/>
+                          </Trigger>
+                        </Style.Triggers>
+                      </Style>
+                    </Border.Style>
+                    <Grid>
+                      <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                      </Grid.ColumnDefinitions>
+                      
+                      <!-- الأيقونة -->
+                      <Border
+                        Grid.Column="0"
+                        Background="White"
+                        Width="36"
+                        Height="36"
+                        CornerRadius="18"
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Center"
+                      >
+                        <TextBlock
+                          Text="👤"
+                          FontSize="16"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                        />
+                      </Border>
+                      
+                      <!-- المعلومات -->
+                      <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <TextBlock
+                          Text="{Binding Title}"
+                          FontSize="14"
+                          FontWeight="SemiBold"
+                          Foreground="#1E293B"
+                          Margin="0,0,0,3"
+                        />
+                        <TextBlock
+                          Text="{Binding MembersCount}"
+                          FontSize="12"
+                          Foreground="#64748B"
+                        />
+                      </StackPanel>
+                      
+                      <!-- المبلغ -->
+                      <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="0,0,10,0">
+                        <TextBlock
+                          FontSize="16"
+                          FontWeight="Bold"
+                          Foreground="{Binding AmountColor}"
+                          TextAlignment="Right"
+                        >
+                          <Run Text="{Binding Amount, StringFormat=N2}" />
+                          <Run Text=" ريال" FontSize="12" Foreground="#64748B" />
+                        </TextBlock>
+                      </StackPanel>
+                      
+                      <!-- زر التفاصيل -->
+                      <Button
+                        Grid.Column="3"
+                        Command="{Binding DataContext.ItemClickCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                        CommandParameter="{Binding}"
+                        Style="{StaticResource SecondaryButton}"
+                        Width="32"
+                        Height="32"
+                        Padding="0"
+                        VerticalAlignment="Center"
+                      >
+                        <TextBlock Text="►" FontSize="14" FontWeight="Bold" Foreground="#64748B"/>
+                      </Button>
+                    </Grid>
+                  </Border>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </StackPanel>
+        </Border>
+        <!-- أزرار التنقل -->
+        <Grid Margin="0,20,0,0">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="*"/>
+          </Grid.ColumnDefinitions>
+          
+          <!-- زر الانتقال للتحصيل اليومي -->
+          <Button
+            Grid.Column="0"
+            Command="{Binding GoToCollectionCommand}"
+            Style="{StaticResource PrimaryButton}"
+            HorizontalAlignment="Stretch"
+            Height="50"
+          >
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+              <TextBlock Text="💰" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center" />
+              <TextBlock Text="التحصيل اليومي" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" />
+              <TextBlock Text="◀" FontSize="16" Margin="10,0,0,0" FontWeight="Bold" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+          
+          <!-- زر الانتقال للمتأخرات والسابقات -->
+          <Button
+            Grid.Column="2"
+            Command="{Binding GoToArrearsCommand}"
+            Style="{StaticResource SecondaryButton}"
+            HorizontalAlignment="Stretch"
+            Height="50"
+          >
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+              <TextBlock Text="⚠️" FontSize="18" Margin="0,0,10,0" VerticalAlignment="Center" />
+              <TextBlock Text="المتأخرات والسابقات" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" />
+              <TextBlock Text="◀" FontSize="16" Margin="10,0,0,0" FontWeight="Bold" VerticalAlignment="Center" />
+            </StackPanel>
+          </Button>
+        </Grid>
+      </StackPanel>
+    </ScrollViewer>
+  </Grid>
+</UserControl>

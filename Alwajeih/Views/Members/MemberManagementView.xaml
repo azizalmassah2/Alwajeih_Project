@@ -1,0 +1,281 @@
+<UserControl
+  x:Class="Alwajeih.Views.Members.MemberManagementView"
+  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+  FlowDirection="RightToLeft"
+  FontFamily="{StaticResource Tajawal}"
+  FontSize="14"
+  xmlns:vm="clr-namespace:Alwajeih.ViewModels.Members"
+  xmlns:converters="clr-namespace:Alwajeih.Utilities.Converters"
+>
+    <UserControl.DataContext>
+        <vm:MemberViewModel />
+    </UserControl.DataContext>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="/Resources/Styles/ScrollBarStyles.xaml" />
+                <ResourceDictionary Source="/Resources/Styles/Colors.xaml" />
+                <ResourceDictionary Source="/Resources/Styles/Buttons.xaml" />
+                <ResourceDictionary Source="/Resources/Styles/TextBoxes.xaml" />
+                <ResourceDictionary Source="/Resources/Styles/DataGrids.xaml" />
+                <ResourceDictionary Source="/Resources/Styles/MainStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <converters:EmptyStringToVisibilityConverter x:Key="EmptyStringToVisibilityConverter" />
+            <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+            <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
+            <converters:MemberTypeConverter x:Key="MemberTypeConverter" />
+            <converters:CollectionFrequencyConverter x:Key="CollectionFrequencyConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid Background="#F8FAFC">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Style="{StaticResource ModernScrollViewer}">
+            <StackPanel Margin="20,20">
+                <!-- العنوان الحديث -->
+                <StackPanel Margin="0,0,0,20">
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                        <TextBlock Text="👥" FontSize="24" Margin="0,0,10,0" VerticalAlignment="Center" />
+                        <TextBlock
+              Text="إدارة الأعضاء"
+              FontSize="22"
+              FontWeight="Bold"
+              Foreground="#1E293B"
+              VerticalAlignment="Center"
+            />
+                    </StackPanel>
+                    <TextBlock
+            Text="إضافة وتعديل وأرشفة الأعضاء"
+            FontSize="13"
+            Foreground="#64748B"
+            Margin="34,0,0,0"
+          />
+                </StackPanel>
+                <Grid Margin="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="2*" />
+                        <ColumnDefinition Width="*" MinWidth="150" />
+                    </Grid.ColumnDefinitions>
+                    <!-- قائمة الأعضاء -->
+                    <Border
+            Grid.Column="0"
+            Background="White"
+            CornerRadius="12"
+            Padding="20"
+            Margin="0,0,15,0"
+          >
+                        <Border.Effect>
+                            <DropShadowEffect Color="Black" BlurRadius="8" ShadowDepth="0" Opacity="0.08" />
+                        </Border.Effect>
+                        <StackPanel>
+                            <TextBlock
+                Text="📋 قائمة الأعضاء"
+                FontSize="16"
+                FontWeight="SemiBold"
+                Foreground="#1E293B"
+                Margin="0,0,0,12"
+              />
+                            <!-- البحث -->
+                            <Grid Margin="0,0,0,15">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" MinWidth="150" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Border
+                  Grid.Column="0"
+                  Background="#F8FAFC"
+                  BorderBrush="#E2E8F0"
+                  BorderThickness="1"
+                  CornerRadius="8"
+                  Height="40"
+                  Margin="0,0,10,0"
+                >
+                                    <Grid>
+                                        <TextBlock
+                      Text="🔍 ابحث هنا..."
+                      Foreground="#94A3B8"
+                      VerticalAlignment="Center"
+                      Margin="12,0"
+                      IsHitTestVisible="False"
+                      Visibility="{Binding SearchText, Converter={StaticResource EmptyStringToVisibilityConverter}}"
+                    />
+                                        <TextBox
+                      Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                      Background="Transparent"
+                      BorderThickness="0"
+                      Padding="12,0"
+                      VerticalContentAlignment="Center"
+                    />
+                                    </Grid>
+                                </Border>
+                                <Button
+                  Grid.Column="1"
+                  Content="🔄 تحديث"
+                  Command="{Binding RefreshCommand}"
+                  Width="Auto" MinWidth="90"
+                  Height="40"
+                  Margin="0,0,10,0"
+                  Background="#2563EB"
+                  Foreground="White"
+                  BorderThickness="0"
+                  Cursor="Hand"
+                >
+                                    <Button.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="8" />
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                                <CheckBox
+                  Grid.Column="2"
+                  Content="المؤرشفين"
+                  IsChecked="{Binding ShowArchived}"
+                  VerticalAlignment="Center"
+                />
+                            </Grid>
+                            <!-- DataGrid مع Border -->
+                            <Border
+                CornerRadius="8"
+                BorderBrush="#E2E8F0"
+                BorderThickness="1"
+                Background="White"
+                Margin="0,0,0,0"
+              >
+                                <DataGrid
+                  ItemsSource="{Binding Members}"
+                  SelectedItem="{Binding SelectedMember}"
+                  Height="450"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  Style="{StaticResource ModernDataGrid}"
+                >
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="الرقم" Binding="{Binding MemberID}" Width="Auto" MinWidth="80" />
+                                        <DataGridTextColumn Header="الاسم" Binding="{Binding Name}" Width="*" MinWidth="150" />
+                                        <DataGridTextColumn Header="الهاتف" Binding="{Binding Phone}" Width="Auto" MinWidth="120" />
+                                        <DataGridTextColumn 
+                      Header="نوع العضو" 
+                      Binding="{Binding MemberType, Converter={StaticResource MemberTypeConverter}}" 
+                      Width="Auto" MinWidth="120"
+                    />
+                                        <DataGridTextColumn 
+                      Header="نوع التحصيل" 
+                      Binding="{Binding CollectionFrequency, Converter={StaticResource CollectionFrequencyConverter}}" 
+                      Width="Auto" MinWidth="120"
+                    />
+                                        <DataGridTextColumn
+                      Header="تاريخ التسجيل"
+                      Binding="{Binding CreatedDate, StringFormat=yyyy-MM-dd}"
+                      Width="Auto" MinWidth="130"
+                    />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Border>
+                        </StackPanel>
+                    </Border>
+                    <!-- نموذج الإضافة/التعديل -->
+                    <Border Grid.Column="1" Style="{StaticResource ModernCard}">
+                        <StackPanel>
+                            <TextBlock
+                Text="{Binding IsEditMode, Converter={StaticResource BoolToString}}"
+                Style="{StaticResource SectionTitle}"
+              />
+                            <TextBlock Text="الاسم *" Style="{StaticResource FieldLabel}" Margin="0,15,0,5" />
+                            <TextBox Text="{Binding Name}" Style="{StaticResource ModernTextBox}" />
+                            
+                            <TextBlock Text="الهاتف" Style="{StaticResource FieldLabel}" Margin="0,15,0,5" />
+                            <TextBox Text="{Binding Phone}" Style="{StaticResource ModernTextBox}" />
+                            
+                            <!-- نوع العضو -->
+                            <TextBlock Text="نوع العضو *" Style="{StaticResource FieldLabel}" Margin="0,15,0,5" />
+                            <ComboBox SelectedIndex="{Binding MemberTypeIndex}" 
+                                      Style="{StaticResource ModernComboBox}">
+                                <ComboBoxItem Content="عضو أساسي" />
+                                <ComboBoxItem Content="خلف الجمعية" />
+                            </ComboBox>
+                            
+                            <!-- نوع التحصيل - يظهر فقط للأعضاء الأساسيين -->
+                            <TextBlock Text="نوع التحصيل *" Style="{StaticResource FieldLabel}" Margin="0,15,0,5" 
+                                       Visibility="{Binding IsBehindAssociationMember, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                            <ComboBox SelectedIndex="{Binding CollectionFrequencyIndex}" 
+                                      Style="{StaticResource ModernComboBox}"
+                                      Visibility="{Binding IsBehindAssociationMember, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                <ComboBoxItem Content="تحصيل يومي" />
+                                <ComboBoxItem Content="تحصيل أسبوعي" />
+                            </ComboBox>
+                            
+                            <!-- المبلغ اليومي - يظهر فقط عند الإضافة وللأعضاء الأساسيين -->
+                            <TextBlock Text="المبلغ اليومي *" Style="{StaticResource FieldLabel}" Margin="0,15,0,5"
+                                       Visibility="{Binding ShowDailyAmountField, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            <TextBox Text="{Binding DailyAmount, StringFormat=N2}" Style="{StaticResource ModernTextBox}"
+                                     Visibility="{Binding ShowDailyAmountField, Converter={StaticResource BoolToVisibilityConverter}}" />
+                            
+                            <!-- الأزرار -->
+                            <StackPanel Orientation="Horizontal" Margin="0,25,0,0" HorizontalAlignment="Center">
+                                <Button
+                  Command="{Binding SaveMemberCommand}"
+                  Style="{StaticResource SuccessButton}"
+                  Width="Auto" MinWidth="100"
+                  Margin="5"
+                >
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="✅" FontSize="16" Margin="0,0,8,0" />
+                                        <TextBlock Text="حفظ" />
+                                    </StackPanel>
+                                </Button>
+                                <Button
+                  Command="{Binding CancelCommand}"
+                  Style="{StaticResource SecondaryButton}"
+                  Width="Auto" MinWidth="100"
+                  Margin="5"
+                >
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="❌" FontSize="16" Margin="0,0,8,0" />
+                                        <TextBlock Text="إلغاء" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                            <Separator Style="{StaticResource Divider}" Margin="0,20" />
+                            <Button Command="{Binding AddMemberCommand}" Style="{StaticResource PrimaryButton}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="➕" FontSize="16" Margin="0,0,8,0" />
+                                    <TextBlock Text="إضافة عضو جديد" />
+                                </StackPanel>
+                            </Button>
+                            <Button
+                Command="{Binding EditMemberCommand}"
+                Style="{StaticResource SecondaryButton}"
+                Margin="0,10,0,0"
+              >
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="✏️" FontSize="16" Margin="0,0,8,0" />
+                                    <TextBlock Text="تعديل العضو المحدد" />
+                                </StackPanel>
+                            </Button>
+                            <Button
+                Command="{Binding ArchiveMemberCommand}"
+                Style="{StaticResource DangerButton}"
+                Margin="0,10,0,0"
+              >
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="🗃️" FontSize="16" Margin="0,0,8,0" />
+                                    <TextBlock Text="أرشفة العضو" />
+                                </StackPanel>
+                            </Button>
+                            <Button
+                Command="{Binding ViewStatementCommand}"
+                Style="{StaticResource PrimaryButton}"
+                Margin="0,10,0,0"
+              >
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="📄" FontSize="16" Margin="0,0,8,0" />
+                                    <TextBlock Text="عرض كشف الحساب" />
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</UserControl>
